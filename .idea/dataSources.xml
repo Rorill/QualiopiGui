@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="qualiopigui@localhost" uuid="17044a52-78b9-47ce-a50a-f92916d14ef2">
+    <data-source source="LOCAL" name="QualiopiGui@localhost" uuid="12e3a1c0-863d-4258-8ec2-44e837958461">
       <driver-ref>mysql.8</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
-      <jdbc-url>jdbc:mysql://localhost:3308/qualiopigui</jdbc-url>
+      <jdbc-url>jdbc:mysql://localhost:3308/QualiopiGui</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
   </component>
