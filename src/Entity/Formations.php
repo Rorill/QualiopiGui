@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\FormationsRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -25,6 +27,28 @@ class Formations
 
     #[ORM\Column(length: 255)]
     private ?string $name = null;
+
+    /**
+     * @var Collection<int, Documents>
+     */
+    #[ORM\OneToMany(targetEntity: Documents::class, mappedBy: 'Formation')]
+    private Collection $documents;
+
+    #[ORM\ManyToOne(inversedBy: 'formations')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Site $Site = null;
+
+    /**
+     * @var Collection<int, User>
+     */
+    #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'formations')]
+    private Collection $Instructor;
+
+    public function __construct()
+    {
+        $this->documents = new ArrayCollection();
+        $this->Instructor = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -82,6 +106,60 @@ class Formations
     public function setName(string $name): static
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Documents>
+     */
+    public function getDocuments(): Collection
+    {
+        return $this->documents;
+    }
+
+    public function addDocument(Documents $document): static
+    {
+        if (!$this->documents->contains($document)) {
+            $this->documents->add($document);
+            $document->setFormation($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDocument(Documents $document): static
+    {
+        if ($this->documents->removeElement($document)) {
+            // set the owning side to null (unless already changed)
+            if ($document->getFormation() === $this) {
+                $document->setFormation(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getInstructor(): Collection
+    {
+        return $this->Instructor;
+    }
+
+    public function addInstructor(User $instructor): static
+    {
+        if (!$this->Instructor->contains($instructor)) {
+            $this->Instructor->add($instructor);
+        }
+
+        return $this;
+    }
+
+    public function removeInstructor(User $instructor): static
+    {
+        $this->Instructor->removeElement($instructor);
 
         return $this;
     }

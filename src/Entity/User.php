@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -30,6 +32,24 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\Column]
     private ?string $password = null;
+
+    /**
+     * @var Collection<int, Documents>
+     */
+    #[ORM\OneToMany(targetEntity: Documents::class, mappedBy: 'Instructor')]
+    private Collection $Docs;
+
+    /**
+     * @var Collection<int, Formations>
+     */
+    #[ORM\ManyToMany(targetEntity: Formations::class, mappedBy: 'Instructor')]
+    private Collection $formations;
+
+    public function __construct()
+    {
+        $this->Docs = new ArrayCollection();
+        $this->formations = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -104,5 +124,62 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    /**
+     * @return Collection<int, Documents>
+     */
+    public function getDocs(): Collection
+    {
+        return $this->Docs;
+    }
+
+    public function addDoc(Documents $doc): static
+    {
+        if (!$this->Docs->contains($doc)) {
+            $this->Docs->add($doc);
+            $doc->setInstructor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDoc(Documents $doc): static
+    {
+        if ($this->Docs->removeElement($doc)) {
+            // set the owning side to null (unless already changed)
+            if ($doc->getInstructor() === $this) {
+                $doc->setInstructor(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Formations>
+     */
+    public function getFormations(): Collection
+    {
+        return $this->formations;
+    }
+
+    public function addFormation(Formations $formation): static
+    {
+        if (!$this->formations->contains($formation)) {
+            $this->formations->add($formation);
+            $formation->addInstructor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFormation(Formations $formation): static
+    {
+        if ($this->formations->removeElement($formation)) {
+            $formation->removeInstructor($this);
+        }
+
+        return $this;
     }
 }
