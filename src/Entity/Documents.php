@@ -36,6 +36,10 @@ class Documents
     #[ORM\JoinColumn(nullable: false)]
     private ?Formations $Formation = null;
 
+    #[ORM\ManyToOne(inversedBy: 'Document')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Category $category = null;
+
     public function __construct()
     {
         $this->instructor = new ArrayCollection();
@@ -115,6 +119,18 @@ class Documents
     public function setFormation(?Formations $Formation): static
     {
         $this->Formation = $Formation;
+
+        return $this;
+    }
+
+    public function getCategory(): ?Category
+    {
+        return $this->category;
+    }
+
+    public function setCategory(?Category $category): static
+    {
+        $this->category = $category;
 
         return $this;
     }
