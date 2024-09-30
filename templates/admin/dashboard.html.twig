@@ -1,0 +1,69 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Tableau de bord Administrateur</h1>
+
+    <h2>Formations</h2>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Titre</th>
+            <th>Date de début</th>
+            <th>Date de fin</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        {% for formation in formations %}
+            <tr>
+                <td>{{ sessions.name }}</td>
+                <td>{{ session.startDate|date('d/m/Y') }}</td>
+                <td>{{ session.endDate|date('d/m/Y') }}</td>
+            </tr>
+        {% endfor %}
+
+        </tbody>
+    </table>
+
+    <h2>Formateurs</h2>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Nom complet</th>
+            <th>Email</th>
+        </tr>
+        </thead>
+        <tbody>
+  {% for formateurs in formateurs %}
+            <tr>
+                <td>{{ formateurs.id }}</td>
+                <td>{{ formateurs.email }}</td>
+            </tr>
+        {% endfor %}}
+        </tbody>
+    </table>
+
+    <h2>Documents</h2>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Titre</th>
+            <th>Formation</th>
+            <th>Formateur</th>
+            <th>Date d'upload</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for document in documents %}
+            <tr>
+                <td>{{ document.title }}</td>
+                <td>{{ document.session.title }}</td>
+                <td>{{ document.user.fullName }}</td>
+                <td>{{ document.uploadedAt|date('d/m/Y H:i') }}</td>
+                <td><a href="{{ asset('uploads/documents/' ~ document.filePath) }}" target="_blank">Télécharger</a></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
