@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Importer des Formations depuis un Fichier CSV</h1>
+
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+    <button class="btn btn-primary">Importer</button>
+    {{ form_end(form) }}
+
+    <a href="{{ path('app_admin') }}">Retour au tableau de bord</a>
+{% endblock %}

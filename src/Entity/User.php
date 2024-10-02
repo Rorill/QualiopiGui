@@ -36,8 +36,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var Collection<int, Documents>
      */
-    #[ORM\OneToMany(targetEntity: Documents::class, mappedBy: 'Instructor')]
-    private Collection $Docs;
 
     /**
      * @var Collection<int, Formations>
@@ -45,11 +43,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: Formations::class, mappedBy: 'Instructor')]
     private Collection $formations;
 
-    public function __construct()
-    {
-        $this->Docs = new ArrayCollection();
-        $this->formations = new ArrayCollection();
-    }
+
 
     public function getId(): ?int
     {
@@ -129,32 +123,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @return Collection<int, Documents>
      */
-    public function getDocs(): Collection
-    {
-        return $this->Docs;
-    }
-
-    public function addDoc(Documents $doc): static
-    {
-        if (!$this->Docs->contains($doc)) {
-            $this->Docs->add($doc);
-            $doc->setInstructor($this);
-        }
-
-        return $this;
-    }
-
-    public function removeDoc(Documents $doc): static
-    {
-        if ($this->Docs->removeElement($doc)) {
-            // set the owning side to null (unless already changed)
-            if ($doc->getInstructor() === $this) {
-                $doc->setInstructor(null);
-            }
-        }
-
-        return $this;
-    }
 
     /**
      * @return Collection<int, Formations>

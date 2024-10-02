@@ -34,9 +34,6 @@ class Formations
     #[ORM\OneToMany(targetEntity: Documents::class, mappedBy: 'Formation')]
     private Collection $documents;
 
-    #[ORM\ManyToOne(inversedBy: 'formations')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Site $Site = null;
 
     /**
      * @var Collection<int, User>
@@ -61,18 +58,19 @@ class Formations
 
         return $this;
     }
-
-    public function getSite(): ?string
-    {
-        return $this->site;
-    }
-
     public function setSite(string $site): static
     {
         $this->site = $site;
 
         return $this;
     }
+
+    public function getSite(): ?string
+    {
+        return $this->site;
+    }
+
+
 
     public function getStartingDate(): ?\DateTimeInterface
     {

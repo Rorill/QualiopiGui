@@ -1,9 +1,9 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>Tableau de bord Administrateur</h1>
+    <h1 class="flex justify-center">Tableau de bord Administrateur</h1>
 
-    <h2>Formations</h2>
+    <h2 class="flex justify-center">Formations</h2>
     <table class="table">
         <thead>
         <tr>
@@ -25,7 +25,9 @@
         </tbody>
     </table>
 
-    <h2>Formateurs</h2>
+
+    <div class="mt-32">
+    <h2 class="flex justify-center">Formateurs</h2>
     <table class="table">
         <thead>
         <tr>
@@ -39,11 +41,14 @@
                 <td>{{ formateurs.id }}</td>
                 <td>{{ formateurs.email }}</td>
             </tr>
-        {% endfor %}}
+        {% endfor %}
         </tbody>
     </table>
+    </div>
 
-    <h2>Documents</h2>
+
+    <div class="mt-32">
+    <h2 class="flex justify-center font-bold">Documents</h2>
     <table class="table">
         <thead>
         <tr>
@@ -66,4 +71,5 @@
         {% endfor %}
         </tbody>
     </table>
+    </div>
 {% endblock %}

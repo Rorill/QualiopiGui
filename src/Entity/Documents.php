@@ -25,12 +25,6 @@ class Documents
     /**
      * @var Collection<int, User>
      */
-    #[ORM\OneToMany(targetEntity: User::class, mappedBy: 'Documents')]
-    private Collection $instructor;
-
-    #[ORM\ManyToOne(inversedBy: 'Docs')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?User $Instructor = null;
 
     #[ORM\ManyToOne(inversedBy: 'documents')]
     #[ORM\JoinColumn(nullable: false)]
@@ -40,10 +34,6 @@ class Documents
     #[ORM\JoinColumn(nullable: false)]
     private ?Category $category = null;
 
-    public function __construct()
-    {
-        $this->instructor = new ArrayCollection();
-    }
 
     public function getId(): ?int
     {
@@ -77,39 +67,6 @@ class Documents
     /**
      * @return Collection<int, User>
      */
-    public function getInstructor(): Collection
-    {
-        return $this->instructor;
-    }
-
-    public function addInstructor(User $instructor): static
-    {
-        if (!$this->instructor->contains($instructor)) {
-            $this->instructor->add($instructor);
-            $instructor->setDocuments($this);
-        }
-
-        return $this;
-    }
-
-    public function removeInstructor(User $instructor): static
-    {
-        if ($this->instructor->removeElement($instructor)) {
-            // set the owning side to null (unless already changed)
-            if ($instructor->getDocuments() === $this) {
-                $instructor->setDocuments(null);
-            }
-        }
-
-        return $this;
-    }
-
-    public function setInstructor(?User $Instructor): static
-    {
-        $this->Instructor = $Instructor;
-
-        return $this;
-    }
 
     public function getFormation(): ?Formations
     {
