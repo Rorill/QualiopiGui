@@ -16,9 +16,9 @@
 
         {% for formation in formations %}
             <tr>
-                <td>{{ sessions.name }}</td>
-                <td>{{ session.startDate|date('d/m/Y') }}</td>
-                <td>{{ session.endDate|date('d/m/Y') }}</td>
+                <td>{{ formation.name }}</td>
+                <td>{{ formation.startingDate|date }}</td>
+                <td>{{ formation.endingDate|date }}</td>
             </tr>
         {% endfor %}
 

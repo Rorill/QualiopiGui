@@ -20,10 +20,10 @@ class Formations
     private ?string $site = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTimeInterface $starting_date = null;
+    private ?\DateTime $starting_date = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTimeInterface $ending_date = null;
+    private ?\DateTime $ending_date = null;
 
     #[ORM\Column(length: 255)]
     private ?string $name = null;
@@ -72,24 +72,24 @@ class Formations
 
 
 
-    public function getStartingDate(): ?\DateTimeInterface
+    public function getStartingDate(): ?\DateTime
     {
         return $this->starting_date;
     }
 
-    public function setStartingDate(\DateTimeInterface $starting_date): static
+    public function setStartingDate(\DateTime $starting_date): static
     {
         $this->starting_date = $starting_date;
 
         return $this;
     }
 
-    public function getEndingDate(): ?\DateTimeInterface
+    public function getEndingDate(): ?\DateTime
     {
         return $this->ending_date;
     }
 
-    public function setEndingDate(\DateTimeInterface $ending_date): static
+    public function setEndingDate(\DateTime $ending_date): static
     {
         $this->ending_date = $ending_date;
 
