@@ -13,6 +13,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Constraints\Date;
 
+
 class AdminController extends AbstractController
 {
     #[Route('/admin', name: 'app_admin')]
@@ -55,7 +56,6 @@ class AdminController extends AbstractController
                     if ($lineCount == 1) {
                         continue;
                     }
-
 
 
                     // CSV file has 4 columns
