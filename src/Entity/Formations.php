@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use phpDocumentor\Reflection\Types\String_;
 
 #[ORM\Entity(repositoryClass: FormationsRepository::class)]
 class Formations
@@ -158,10 +159,13 @@ class Formations
         return $this->location;
     }
 
-    public function setLocation(?Location $location): static
+    /**
+     * @param Location|null $location
+     */
+    public function setLocation(?Location $location): self
     {
         $this->location = $location;
-
         return $this;
     }
+
 }

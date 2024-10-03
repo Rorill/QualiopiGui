@@ -66,23 +66,37 @@ class AdminController extends AbstractController
                     }
 
 
+
+
                     // CSV file has 4 columns
                     $name = $data[0];
-                    $starting_date = new \DateTime($data[1]);
-                    $ending_date = new \DateTime($data[2]);
-                    $location = $data[3];
+                    $startDateStr = trim($data[1] ?? null);
+                    $endDateStr = trim($data[2] ?? null);
+                    $locationName = $data[3];
+
+                    $startDate = \DateTime::createFromFormat('d/m/Y', $startDateStr);
+                    $endDate = \DateTime::createFromFormat('d/m/Y', $endDateStr);
+
+                    // Rechercher l'entité Location par nom
+                    $location = $entityManager->getRepository(Location::class)->findOneBy(['Name' => $locationName]);
+
+                    if (!$location) {
+                        continue; // Ignorer cette ligne si le lieu n'est pas trouvé
+                    }
+
+
 
                     // check if the formation already exist
                     $existingSession = $entityManager->getRepository(Formations::class)
-                        ->findOneBy(['name' => $name, 'starting_date' => $starting_date, 'ending_date' => $ending_date]);
+                        ->findOneBy(['name' => $name, 'starting_date' => $startDate, 'ending_date' => $endDate]);
 
                     if (!$existingSession) {
                         // Create if it doesn't
                         $session = new Formations();
                         $session->setName($name);
-                        $session->setStartingDate($starting_date);
-                        $session->setEndingDate($ending_date);
-                        $session->setLocation($location);
+                        $session->setStartingDate($startDate);
+                        $session->setEndingDate($endDate);
+                        $session->setLocation($location); // Assigner l'objet Location trouvé
 
                         $entityManager->persist($session);
                         $rowCount++;

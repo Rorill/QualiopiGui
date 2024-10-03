@@ -21,8 +21,8 @@
         {% for formation in formations %}
             <tr>
                 <td>{{ formation.name }}</td>
-                <td>{{ formation.startingDate|date }}</td>
-                <td>{{ formation.endingDate|date }}</td>
+                <td>{{ formation.startingDate|date('d/m/Y') }}</td>
+                <td>{{ formation.endingDate|date('d/m/Y') }}</td>
                 <td> {{ formation.location.City  }}</td>
                 <td>
                     <a href="{{ path('admin_session_edit', { id: formation.id }) }}" class="btn btn-warning">Modifier</a>

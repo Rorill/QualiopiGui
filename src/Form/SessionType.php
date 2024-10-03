@@ -29,6 +29,7 @@ class SessionType extends AbstractType
                 'label' => 'Date de Fin',
                 'widget' => 'single_text',
             ])
+
             ->add('name')
 
         ;
