@@ -2,6 +2,8 @@
 
 {% block body %}
     <h1 class="flex justify-center">Tableau de bord Administrateur</h1>
+    <a href="{{ path('admin_session_add') }}" class="btn btn-success">Ajouter une nouvelle formation</a>
+
 
     <h2 class="flex justify-center">Formations</h2>
     <table class="table">
@@ -10,6 +12,7 @@
             <th>Titre</th>
             <th>Date de début</th>
             <th>Date de fin</th>
+            <th>Action</th>
         </tr>
         </thead>
         <tbody>
@@ -19,6 +22,10 @@
                 <td>{{ formation.name }}</td>
                 <td>{{ formation.startingDate|date }}</td>
                 <td>{{ formation.endingDate|date }}</td>
+                <td>
+                    <a href="{{ path('admin_session_edit', { id: formation.id }) }}" class="btn btn-warning">Modifier</a>
+                    <a href="{{ path('admin_session_delete', { id: formation.id }) }}" class="btn btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette formation ?');">Supprimer</a>
+                </td>
             </tr>
         {% endfor %}
 

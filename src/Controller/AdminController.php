@@ -5,6 +5,7 @@ use App\Entity\Documents;
 use App\Entity\Formations;
 use App\Entity\User;
 use App\Form\CsvImportType;
+use App\Form\SessionType;
 use App\Form\UserType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -181,6 +182,77 @@ class AdminController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
+
+
+    // function to add Formation
+
+    #[Route('/admin/session/add', name: 'admin_session_add')]
+    #[IsGranted('ROLE_ADMIN')]
+    public function addSession(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $session = new Formations();
+        $form = $this->createForm(SessionType::class, $session);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Register formation in database
+            $entityManager->persist($session);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Formation ajoutée avec succès.');
+            return $this->redirectToRoute('app_admin');
+        }
+
+        return $this->render('admin/add_session.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
+
+    //function to edit session
+    #[Route('/admin/session/edit/{id}', name: 'admin_session_edit')]
+    #[IsGranted('ROLE_ADMIN')]
+    public function editSession(int $id, Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $session = $entityManager->getRepository(Formations::class)->find($id);
+
+        if (!$session) {
+            throw $this->createNotFoundException('Formation non trouvée.');
+        }
+
+        $form = $this->createForm(SessionType::class, $session);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Formation modifiée avec succès.');
+            return $this->redirectToRoute('app_admin');
+        }
+
+        return $this->render('admin/edit_session.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
+
+    // function to delete Formation
+
+    #[Route('/admin/session/delete/{id}', name: 'admin_session_delete')]
+    #[IsGranted('ROLE_ADMIN')]
+    public function deleteSession(int $id, EntityManagerInterface $entityManager): Response
+    {
+        $session = $entityManager->getRepository(Formations::class)->find($id);
+
+        if (!$session) {
+            throw $this->createNotFoundException('Formation non trouvée.');
+        }
+
+        $entityManager->remove($session);
+        $entityManager->flush();
+
+        $this->addFlash('success', 'Formation supprimée avec succès.');
+        return $this->redirectToRoute('app_admin');
+    }
+
 
 
 
