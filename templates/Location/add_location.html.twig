@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Ajouter un nouveau lieu</h1>
+
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+    <button type="submit" class="btn btn-primary">Ajouter le lieu</button>
+    {{ form_end(form) }}
+
+    <a href="{{ path('admin_location_list') }}">Retour à la liste des lieux</a>
+{% endblock %}

@@ -16,8 +16,6 @@ class Formations
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $site = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTime $starting_date = null;
@@ -41,6 +39,9 @@ class Formations
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'formations')]
     private Collection $Instructor;
 
+    #[ORM\ManyToOne(inversedBy: 'Formations')]
+    private ?Location $location = null;
+
     public function __construct()
     {
         $this->documents = new ArrayCollection();
@@ -58,17 +59,7 @@ class Formations
 
         return $this;
     }
-    public function setSite(string $site): static
-    {
-        $this->site = $site;
 
-        return $this;
-    }
-
-    public function getSite(): ?string
-    {
-        return $this->site;
-    }
 
 
 
@@ -158,6 +149,18 @@ class Formations
     public function removeInstructor(User $instructor): static
     {
         $this->Instructor->removeElement($instructor);
+
+        return $this;
+    }
+
+    public function getLocation(): ?Location
+    {
+        return $this->location;
+    }
+
+    public function setLocation(?Location $location): static
+    {
+        $this->location = $location;
 
         return $this;
     }

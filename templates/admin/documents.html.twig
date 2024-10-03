@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Documents par Session et Formateur</h1>
+
+    {% for session in sessions %}
+        <h2>Formation : {{ session.name }}</h2>
+        <p>Lieu : {{ session.site }}</p>
+        <p>Date de début : {{ session.startingDate|date('d/m/Y') }}</p>
+        <p>Date de fin : {{ session.endingDate|date('d/m/Y') }}</p>
+
+        {% set formateurs = session.documents|map(d => d.user) %}
+
+        {% for formateur in formateurs %}
+            <h3>Formateur : {{ formateur.fullName }}</h3>
+            <ul>
+                {% for document in session.documents if document.user == formateur %}
+                    <li>
+                        <strong>{{ document.title }}</strong> - Téléchargé le {{ document.uploadedAt|date('d/m/Y H:i') }}
+                        <br>
+                        <a href="{{ asset('uploads/documents/' ~ document.filePath) }}" target="_blank">Télécharger</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endfor %}
+    {% endfor %}
+{% endblock %}

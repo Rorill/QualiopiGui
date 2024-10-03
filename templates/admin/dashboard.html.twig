@@ -12,6 +12,7 @@
             <th>Titre</th>
             <th>Date de début</th>
             <th>Date de fin</th>
+            <td>Lieu </td>
             <th>Action</th>
         </tr>
         </thead>
@@ -22,6 +23,7 @@
                 <td>{{ formation.name }}</td>
                 <td>{{ formation.startingDate|date }}</td>
                 <td>{{ formation.endingDate|date }}</td>
+                <td> {{ formation.location.City  }}</td>
                 <td>
                     <a href="{{ path('admin_session_edit', { id: formation.id }) }}" class="btn btn-warning">Modifier</a>
                     <a href="{{ path('admin_session_delete', { id: formation.id }) }}" class="btn btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette formation ?');">Supprimer</a>
@@ -40,13 +42,13 @@
         <tr>
             <th>Nom complet</th>
             <th>Email</th>
-            <th>Acitons</th>
+            <th>Actions</th>
         </tr>
         </thead>
         <tbody>
   {% for formateurs in formateurs %}
             <tr>
-                <td>{{ formateurs.id }}</td>
+                <td>{{ formateurs.firstName }}  {{ formateurs.lastName }}</td>
                 <td>{{ formateurs.email }}</td>
                 <td>
                     <a href="{{ path('admin_user_edit', {id: formateurs.id}) }}" class="btn btn-warning">Modifier</a>
@@ -59,29 +61,5 @@
     </div>
 
 
-    <div class="mt-32">
-    <h2 class="flex justify-center font-bold">Documents</h2>
-    <table class="table">
-        <thead>
-        <tr>
-            <th>Titre</th>
-            <th>Formation</th>
-            <th>Formateur</th>
-            <th>Date d'upload</th>
-            <th>Action</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for document in documents %}
-            <tr>
-                <td>{{ document.title }}</td>
-                <td>{{ document.session.title }}</td>
-                <td>{{ document.user.fullName }}</td>
-                <td>{{ document.uploadedAt|date('d/m/Y H:i') }}</td>
-                <td><a href="{{ asset('uploads/documents/' ~ document.filePath) }}" target="_blank">Télécharger</a></td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-    </div>
+
 {% endblock %}

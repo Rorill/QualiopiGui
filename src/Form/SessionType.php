@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Formations;
+use App\Entity\Location;
 use App\Entity\User;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -14,7 +15,12 @@ class SessionType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('site')
+            ->add('location', EntityType::class, [
+                'class' => Location::class,
+                'choice_label' => 'City',
+                'label' => 'Lieu',
+                'placeholder' => 'Sélectionner un lieu',
+            ])
             ->add('starting_date', null, [
                 'label' => 'Date de début',
                 'widget' => 'single_text',
@@ -24,11 +30,7 @@ class SessionType extends AbstractType
                 'widget' => 'single_text',
             ])
             ->add('name')
-            ->add('Instructor', EntityType::class, [
-                'class' => User::class,
-                'choice_label' => 'id',
-                'multiple' => true,
-            ])
+
         ;
     }
 

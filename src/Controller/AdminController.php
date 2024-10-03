@@ -3,10 +3,13 @@
 namespace App\Controller;
 use App\Entity\Documents;
 use App\Entity\Formations;
+use App\Entity\Location;
 use App\Entity\User;
 use App\Form\CsvImportType;
+use App\Form\LocationType;
 use App\Form\SessionType;
 use App\Form\UserType;
+use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -22,11 +25,12 @@ class AdminController extends AbstractController
 {
     #[Route('/admin', name: 'app_admin')]
     #[IsGranted('ROLE_ADMIN')]
-    public function index(EntityManagerInterface $entityManager): Response
+    public function index(EntityManagerInterface $entityManager,UserRepository $userRepository): Response
     {// get info in entities
         $formations = $entityManager->getRepository(Formations::class)->findAll();
         $formateurs = $entityManager->getRepository(User::class)->findall();
         $documents = $entityManager->getRepository(Documents::class)->findAll();
+        $fullname = $userRepository->findUsersWithFullName();
         return $this->render('admin/dashboard.html.twig', [
             'controller_name' => 'AdminController',
             'formations' => $formations,
@@ -78,7 +82,7 @@ class AdminController extends AbstractController
                         $session->setName($name);
                         $session->setStartingDate($starting_date);
                         $session->setEndingDate($ending_date);
-                        $session->setSite($location);
+                        $session->setLocation($location);
 
                         $entityManager->persist($session);
                         $rowCount++;
@@ -251,6 +255,107 @@ class AdminController extends AbstractController
 
         $this->addFlash('success', 'Formation supprimée avec succès.');
         return $this->redirectToRoute('app_admin');
+    }
+
+    // view Uploaded documents
+
+    #[Route('/admin/documents', name: 'admin_documents')]
+    #[IsGranted('ROLE_ADMIN')]
+    public function viewDocuments(EntityManagerInterface $entityManager): Response
+    {
+        // get all Formations with their associated docs
+        $sessions = $entityManager->getRepository(Formations::class)->findAll();
+
+        return $this->render('admin/documents.html.twig', [
+            'sessions' => $sessions,
+        ]);
+    }
+
+    // add Location
+    #[Route('/admin/location/add', name: 'admin_location_add')]
+    #[IsGranted('ROLE_ADMIN')]
+    public function addLocation(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $location = new Location();
+        $form = $this->createForm(LocationType::class, $location);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($location);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Lieu ajouté avec succès.');
+            return $this->redirectToRoute('admin_location_list');
+        }
+
+        return $this->render('Location/add_location.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
+
+
+        // modify a Location
+
+        #[Route('/admin/location/edit/{id}', name: 'admin_location_edit')]
+        #[IsGranted('ROLE_ADMIN')]
+        public function editLocation(int $id, Request $request, EntityManagerInterface $entityManager): Response
+        {
+            $location = $entityManager->getRepository(Location::class)->find($id);
+
+            if (!$location) {
+                throw $this->createNotFoundException('Lieu non trouvé.');
+            }
+
+            $form = $this->createForm(LocationType::class, $location);
+            $form->handleRequest($request);
+
+            if ($form->isSubmitted() && $form->isValid()) {
+                $entityManager->flush();
+
+                $this->addFlash('success', 'Lieu modifié avec succès.');
+                return $this->redirectToRoute('admin_location_list');
+            }
+
+            return $this->render('Location/edit_location.html.twig', [
+                'form' => $form->createView(),
+            ]);
+
+
+
+
+
+
+    }
+
+    // supress a Location
+    #[Route('/admin/location/delete/{id}', name: 'admin_location_delete')]
+    #[IsGranted('ROLE_ADMIN')]
+    public function deleteLocation(int $id, EntityManagerInterface $entityManager): Response
+    {
+        $location = $entityManager->getRepository(Location::class)->find($id);
+
+        if (!$location) {
+            throw $this->createNotFoundException('Lieu non trouvé.');
+        }
+
+        $entityManager->remove($location);
+        $entityManager->flush();
+
+        $this->addFlash('success', 'Lieu supprimé avec succès.');
+        return $this->redirectToRoute('admin_location_list');
+    }
+
+    // list location
+
+    #[Route('/admin/location/list', name: 'admin_location_list')]
+    #[IsGranted('ROLE_ADMIN')]
+    public function listLocations(EntityManagerInterface $entityManager): Response
+    {
+        $locations = $entityManager->getRepository(Location::class)->findAll();
+
+        return $this->render('Location/list_location.html.twig', [
+            'locations' => $locations,
+        ]);
     }
 
 
