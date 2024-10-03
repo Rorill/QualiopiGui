@@ -33,6 +33,7 @@
         <tr>
             <th>Nom complet</th>
             <th>Email</th>
+            <th>Acitons</th>
         </tr>
         </thead>
         <tbody>
@@ -40,6 +41,10 @@
             <tr>
                 <td>{{ formateurs.id }}</td>
                 <td>{{ formateurs.email }}</td>
+                <td>
+                    <a href="{{ path('admin_user_edit', {id: formateurs.id}) }}" class="btn btn-warning">Modifier</a>
+                    <a href="{{ path('admin_user_delete', { id: formateurs.id }) }}" class="btn btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?');">Supprimer</a>
+                </td>
             </tr>
         {% endfor %}
         </tbody>

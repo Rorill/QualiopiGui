@@ -129,6 +129,59 @@ class AdminController extends AbstractController
         ]);
     }
 
+    // function to delete user
+
+    #[Route('/admin/user/delete/{id}', name: 'admin_user_delete')]
+    #[IsGranted('ROLE_ADMIN')]
+    public function deleteUser(int $id, EntityManagerInterface $entityManager): Response
+    {
+        $user = $entityManager->getRepository(User::class)->find($id);
+
+        if (!$user) {
+            throw $this->createNotFoundException('Utilisateur non trouvé.');
+        }
+
+        $entityManager->remove($user);
+        $entityManager->flush();
+
+        $this->addFlash('success', 'Utilisateur supprimé avec succès.');
+        return $this->redirectToRoute('app_admin');
+    }
+
+    // function to modify user
+
+    #[Route('/admin/user/edit/{id}', name: 'admin_user_edit')]
+    #[IsGranted('ROLE_ADMIN')]
+    public function editUser(int $id, Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher): Response
+    {
+        $user = $entityManager->getRepository(User::class)->find($id);
+
+        if (!$user) {
+            throw $this->createNotFoundException('Utilisateur non trouvé.');
+        }
+
+        $form = $this->createForm(UserType::class, $user);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Hacher le mot de passe si modifié
+            if ($form->get('password')->getData()) {
+                $user->setPassword(
+                    $passwordHasher->hashPassword($user, $user->getPassword())
+                );
+            }
+
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Utilisateur modifié avec succès.');
+            return $this->redirectToRoute('app_admin');
+        }
+
+        return $this->render('admin/edit_user.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
+
 
 
 }

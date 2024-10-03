@@ -4,8 +4,12 @@
     <h1>Ajouter un nouvel utilisateur</h1>
 
     {{ form_start(form) }}
+    {{ form_label(form.email) }}
     {{ form_row(form.email) }}
-    {{ form_row(form.password) }}
+    {{ form_row(form.password,{label:'Mot de Passe'}) }}
+    {{ form_row(form.LastName,{label:"Nom"}) }}
+    {{ form_row(form.FirstName,{label:'Prénom'}) }}
+
 
     <button type="submit" class="btn btn-primary">Créer l'utilisateur</button>
     {{ form_end(form) }}
