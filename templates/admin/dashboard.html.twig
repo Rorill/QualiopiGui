@@ -9,6 +9,7 @@
     <table class="table">
         <thead>
         <tr>
+            <th>ID</th>
             <th>Titre</th>
             <th>Date de début</th>
             <th>Date de fin</th>
@@ -20,6 +21,7 @@
 
         {% for formation in formations %}
             <tr>
+                <td>{{ formation.id }}</td>
                 <td>{{ formation.name }}</td>
                 <td>{{ formation.startingDate|date('d/m/Y') }}</td>
                 <td>{{ formation.endingDate|date('d/m/Y') }}</td>

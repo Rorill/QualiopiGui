@@ -14,6 +14,8 @@ class AppFixtures extends Fixture
         $user->setEmail('admin@admin.com');
         $user->setPassword(password_hash('test1', PASSWORD_DEFAULT));
         $user->setRoles(['ROLE_ADMIN']);
+        $user->setFirstName('john');
+        $user->setLastName('doe');
         $manager->persist($user);
 
         // $product = new Product();
