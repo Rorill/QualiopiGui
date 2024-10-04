@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Documents pour la Formation : {{ formation.name }}</h1>
+
+    <ul>
+        {% for document in documents %}
+            <li>{{ document.title }} - {{ document.uploadedAT|date('d/m/Y') }}</li>
+        {% else %}
+            <li>Aucun document uploadé pour cette formation.</li>
+        {% endfor %}
+    </ul>
+
+    <a href="{{ path('app_user') }}">Retour à mon tableau de bord</a>
+{% endblock %}
