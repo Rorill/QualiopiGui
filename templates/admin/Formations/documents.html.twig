@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<h1>Documents Uploadés par {{ formateur.firstName }} {{ formateur.lastName }} pour la Formation : {{ formation.title }}</h1>
+
+<ul>
+    {% for document in documents %}
+        <li>{{ document.title }} - {{ document.uploadDate|date('d/m/Y') }}</li> {# Modifie selon les champs de l'entité Document #}
+    {% else %}
+        <li>Aucun document uploadé pour cette formation.</li>
+    {% endfor %}
+</ul>
+
+<a href="{{ path('formations_detail', { id: formation.id }) }}">Retour aux détails de la formation</a>

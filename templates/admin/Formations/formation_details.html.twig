@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Détails de la Formation : {{ formation.name }}</h1>
+
+
+    <h2>Formateurs Associés</h2>
+    <table>
+        <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Prénom</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for formateur in formateurs %}
+            <tr>
+                <td><a href="{{ path('formateur_documents', { formationId: formation.id, formateurId: formateur.id }) }}">{{ formateur.lastName }}</a></td>
+                <td>{{ formateur.firstName }}</td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="2">Aucun formateur associé à cette formation.</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+
+    <h2>Associer un Formateur</h2>
+    {{ form_start(form) }}
+    <button type="submit">Associer Formateur</button>
+    {{ form_end(form) }}
+
+    <a href="{{ path('app_formations') }}">Retour à la liste des formations</a>
+{% endblock %}

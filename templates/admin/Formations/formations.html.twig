@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Liste des Formations</h1>
+
+    <div>
+        <a href="{{ path('app_formations', { sort: 'name', order: (sort == 'name' and order == 'asc') ? 'desc' : 'asc' }) }}">
+            Titre
+            {% if sort == 'name' %}
+                {% if order == 'asc' %}▲{% else %}▼{% endif %}
+            {% endif %}
+        </a>
+        |
+        <a href="{{ path('app_formations', { sort: 'startDate', order: (sort == 'startDate' and order == 'asc') ? 'desc' : 'asc' }) }}">
+            Date de Début
+            {% if sort == 'startDate' %}
+                {% if order == 'asc' %}▲{% else %}▼{% endif %}
+            {% endif %}
+        </a>
+        |
+        <a href="{{ path('app_formations', { sort: 'location.name', order: (sort == 'location.name' and order == 'asc') ? 'desc' : 'asc' }) }}">
+            Lieu
+            {% if sort == 'location.name' %}
+                {% if order == 'asc' %}▲{% else %}▼{% endif %}
+            {% endif %}
+        </a>
+    </div>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Titre</th>
+            <th>Date de Début</th>
+            <th>Date de Fin</th>
+            <th>Lieu</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for session in sessions %}
+            <tr>
+                <td><a href="{{ path('formations_detail', { id: session.id }) }}">{{ session.name }}</a></td>
+                <td>{{ session.startingDate|date('d/m/Y') }}</td>
+                <td>{{ session.endingDate|date('d/m/Y') }}</td>
+                <td>{{ session.location.city }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+
+
