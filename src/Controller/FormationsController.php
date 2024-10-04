@@ -104,6 +104,13 @@ public function documentsParFormateur(int $formationId, int $formateurId, Entity
         // Récupérer la formation par ID
         $formation = $entityManager->getRepository(Formations::class)->find($formationId);
 
+        // get Instructors in array
+        $formateurs = $formation->getInstructor()->toArray(); // Convertir en tableau
+
+        $formateursUnique = array_unique($formateurs, SORT_REGULAR); // SORT_REGULAR pour comparer les objets
+
+
+
         // Vérifier si la formation existe
         if (!$formation) {
             throw $this->createNotFoundException('Formation non trouvée');
@@ -119,8 +126,8 @@ public function documentsParFormateur(int $formationId, int $formateurId, Entity
 
         // Récupérer les documents associés à la formation et au formateur
         $documents = $entityManager->getRepository(Documents::class)->findBy([
-            'formation' => $formation,
-            'formateur' => $formateur,
+            'Formation' => $formation,
+            'Formateur' => $formateur,
         ]);
 
         // Renvoyer la vue avec les documents

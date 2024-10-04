@@ -49,6 +49,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255)]
     private ?string $FirstName = null;
 
+    /**
+     * @var Collection<int, Documents>
+     */
+    #[ORM\OneToMany(targetEntity: Documents::class, mappedBy: 'Formateur')]
+    private Collection $documents;
+
+    public function __construct()
+    {
+        $this->documents = new ArrayCollection();
+    }
+
 
 
     public function getId(): ?int
@@ -177,6 +188,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setFirstName(string $FirstName): static
     {
         $this->FirstName = $FirstName;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Documents>
+     */
+    public function getDocuments(): Collection
+    {
+        return $this->documents;
+    }
+
+    public function addDocument(Documents $document): static
+    {
+        if (!$this->documents->contains($document)) {
+            $this->documents->add($document);
+            $document->setFormateur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDocument(Documents $document): static
+    {
+        if ($this->documents->removeElement($document)) {
+            // set the owning side to null (unless already changed)
+            if ($document->getFormateur() === $this) {
+                $document->setFormateur(null);
+            }
+        }
 
         return $this;
     }

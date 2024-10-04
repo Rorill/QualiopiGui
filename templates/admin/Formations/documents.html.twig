@@ -1,14 +1,21 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-<h1>Documents Uploadés par {{ formateur.firstName }} {{ formateur.lastName }} pour la Formation : {{ formation.title }}</h1>
+    <h1>Documents par Session et Formateur</h1>
 
-<ul>
-    {% for document in documents %}
-        <li>{{ document.title }} - {{ document.uploadDate|date('d/m/Y') }}</li> {# Modifie selon les champs de l'entité Document #}
-    {% else %}
-        <li>Aucun document uploadé pour cette formation.</li>
-    {% endfor %}
-</ul>
+    {% for session in formation %}
+        <h2>Formation : {{ session.title }}</h2>
+        <p>Lieu : {{ session.location }}</p>
+        <p>Date de début : {{ session.startDate|date('d/m/Y') }}</p>
+        <p>Date de fin : {{ session.endDate|date('d/m/Y') }}</p>
 
-<a href="{{ path('formations_detail', { id: formation.id }) }}">Retour aux détails de la formation</a>
+        <ul>
+        {% for formateur in formateursUnique %}
+            <li>{{ formateur.firstName }} {{ formateur.lastName }}</li>
+        {% else %}
+            <li>Aucun formateur associé à cette formation.</li>
+        {% endfor %}
+        </ul>
+
+        {% endfor %}
+{% endblock %}

@@ -34,6 +34,10 @@ class Documents
     #[ORM\JoinColumn(nullable: false)]
     private ?Category $category = null;
 
+    #[ORM\ManyToOne(inversedBy: 'documents')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $Formateur = null;
+
 
     public function getId(): ?int
     {
@@ -88,6 +92,18 @@ class Documents
     public function setCategory(?Category $category): static
     {
         $this->category = $category;
+
+        return $this;
+    }
+
+    public function getFormateur(): ?User
+    {
+        return $this->Formateur;
+    }
+
+    public function setFormateur(?User $Formateur): static
+    {
+        $this->Formateur = $Formateur;
 
         return $this;
     }
