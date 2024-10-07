@@ -7,7 +7,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Validator\Constraints\File;
 #[ORM\Entity(repositoryClass: DocumentsRepository::class)]
 class Documents
 {
@@ -107,4 +108,15 @@ class Documents
 
         return $this;
     }
+
+    public function __construct()
+    {
+        $this->uploadedAT = new \DateTimeImmutable;
+    }
+
+
+
+
+
+
 }

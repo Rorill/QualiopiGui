@@ -1,14 +1,16 @@
 {% extends 'base.html.twig' %}
 
+
+
 {% block body %}
     <h1>Bienvenue, {{ user.FirstName }} {{ user.LastName }}</h1>
+
     <h2>Formations Associées</h2>
     <ul>
         {% for formation in formations %}
             <li>
-                <a href="{{ path('user_formation_documents', { id: formation.id }) }}">
-                    {{ formation.name }}
-                </a>
+                {{ formation.name}}
+                <a href="{{ path('app_upload_docs', { id: formation.id }) }}">Uploader un document</a>
             </li>
         {% else %}
             <li>Aucune formation associée.</li>
