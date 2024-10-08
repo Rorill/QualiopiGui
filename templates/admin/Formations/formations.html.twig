@@ -38,23 +38,7 @@
         </form>
 
         <!-- Choix du tri -->
-        <div class="flex mb-4">
-            <div>
-                <a href="{{ path('app_formations', { sort: 'startingDate', order: (sort == 'startingDate' and order == 'asc') ? 'desc' : 'asc', city: city, startingDate: startingDate }) }}" class="text-blue-600 hover:text-blue-800">
-                    Date de Début
-                    {% if sort == 'startingDate' %}
-                        {% if order == 'asc' %}▲{% else %}▼{% endif %}
-                    {% endif %}
-                </a>
-                |
-                <a href="{{ path('app_formations', { sort: 'location.city', order: (sort == 'location.city' and order == 'asc') ? 'desc' : 'asc', city: city, startingDate: startingDate }) }}" class="text-blue-600 hover:text-blue-800">
-                    Lieu
-                    {% if sort == 'location.city' %}
-                        {% if order == 'asc' %}▲{% else %}▼{% endif %}
-                    {% endif %}
-                </a>
-            </div>
-        </div>
+
 
         <!-- Tableau des résultats -->
         <div class="overflow-x-auto">

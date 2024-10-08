@@ -79,49 +79,65 @@ class FormationsController extends AbstractController
 
 
 
-#[Route('/formations/{id}', name: 'formations_detail')]
+    #[Route('/formations/{id}', name: 'formations_detail')]
     #[IsGranted('ROLE_ADMIN')]
-    public function detailFormation(Request $request, EntityManagerInterface $entityManager, $id): Response
-    {  // Récupérer la formation par son ID
+    public function detail(Request $request, EntityManagerInterface $entityManager, $id)
+    {
+        // Récupérer la formation par son ID
         $formation = $entityManager->getRepository(Formations::class)->find($id);
-
-        // Récupérer les documents associés à cette formation, triés par formateur
-        $documents = $entityManager->getRepository(Documents::class)->findBy(['Formation' => $formation], ['Formateur' => 'ASC']);
-
-        // Récupérer les formateurs associés aux documents
-        $formateurs = [];
-        foreach ($documents as $document) {
-            $formateur = $document->getFormateur(); // Assurez-vous que cette méthode existe dans votre entité Document
-            if ($formateur) {
-                $formateurs[$formateur->getId()] = $formateur; // Utiliser l'ID comme clé pour éviter les doublons
-            }
+        if (!$formation) {
+            throw $this->createNotFoundException('Formation non trouvée');
         }
 
+        // Récupérer les formateurs associés
+        $formateurs = $formation->getInstructor();
+
+        // Création d'un formulaire pour associer un formateur à la formation
         $form = $this->createForm(AssociatedFormateurType::class); // Remplacez par le bon type de formulaire
 
         // Gérer le formulaire
-        $form->handleRequest($request );
+        $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
             $formateur = $data['formateur']; // Obtenir le formateur sélectionné
-
-            // Ajouter la logique pour associer le formateur à la formation
-            $formation->addFormateur($formateur); // Assurez-vous que cette méthode existe dans l'entité Formation
+            $formation->addInstructor($formateur); // Assurez-vous que cette méthode existe dans l'entité Formation
             $entityManager->persist($formation);
             $entityManager->flush();
 
-            // Rediriger ou ajouter un message de succès
+            // Rediriger vers les détails de la formation
             return $this->redirectToRoute('formations_detail', ['id' => $formation->getId()]);
         }
 
-
         return $this->render('admin/Formations/formation_details.html.twig', [
             'formation' => $formation,
-            'documents' => $documents,
             'formateurs' => $formateurs,
             'form' => $form->createView(), // Passer le formulaire à la vue
         ]);
-        }
+    }
+
+    #[Route('/admin/formations/{formationId}/formateur/{formateurId}/documents', name: 'formateur_documents')]
+    public function showFormateurDocuments(EntityManagerInterface $entityManager, $formationId, $formateurId)
+    {
+        // Récupérer la formation par son ID
+        $formation = $entityManager->getRepository(Formations::class)->find($formationId);
+
+        // Récupérer le formateur par son ID
+        $formateur = $entityManager->getRepository(User::class)->find($formateurId);
+
+        // Récupérer les documents uploadés par le formateur pour cette formation
+        $documents = $entityManager->getRepository(Documents::class)->findBy([
+            'Formation' => $formation,
+            'Formateurg' => $formateur,
+        ]);
+
+        return $this->render('admin/Formations/formateur_documents.html.twig', [
+            'formation' => $formation,
+            'formateur' => $formateur,
+            'documents' => $documents,
+        ]);
+    }
+
+
 
 
 

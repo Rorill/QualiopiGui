@@ -133,6 +133,7 @@ class DocumentsController extends AbstractController
         // get the file name
         $fileName = $document->getTitle();
 
+
         if (!pathinfo($fileName, PATHINFO_EXTENSION)) {
             // Deviner l'extension si elle n'est pas présente
             $extension = $document->getFileExtension(); // Si une méthode getFileExtension() est présente, sinon à adapter

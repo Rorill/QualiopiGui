@@ -386,26 +386,4 @@ class AdminController extends AbstractController
     }
 
 
-    #[Route('/admin/formations/{id}/formateur/{formateurId}/documents', name: 'admin_formations_documents')]
-    public function showFormateurDocuments(EntityManagerInterface $entityManager, $id, $formateurId)
-    {
-        // Récupérer la formation par son ID
-        $formation = $entityManager->getRepository(Formations::class)->find($id);
-
-        // Récupérer le formateur par son ID
-        $formateur = $entityManager->getRepository(User::class)->find($formateurId);
-
-        // Récupérer les documents uploadés par le formateur pour cette formation
-        $documents = $entityManager->getRepository(Documents::class)->findBy([
-            'Formation' => $formation,
-            'Formateur' => $formateur,
-        ]);
-
-        return $this->render('admin/Formations/documents.html.twig', [
-            'formation' => $formation,
-            'formateur' => $formateur,
-            'documents' => $documents,
-            'id' => $id
-        ]);
-    }
 }
