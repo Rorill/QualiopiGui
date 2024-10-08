@@ -1,36 +1,71 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>Détails de la Formation : {{ formation.name }}</h1>
+    <div class="container mx-auto my-8 p-6 bg-white shadow-md rounded-lg">
+        <h1 class="text-3xl font-bold mb-4 text-gray-800">Détails de la Formation : {{ formation.name }}</h1>
 
-
-    <h2>Formateurs Associés</h2>
-    <table>
-        <thead>
-        <tr>
-            <th>Nom</th>
-            <th>Prénom</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for formateur in formateurs %}
+        <h2 class="text-2xl font-semibold mb-4 text-gray-700">Formateurs Associés</h2>
+        <table class="min-w-full divide-y divide-gray-200 bg-white">
+            <thead class="bg-gray-50">
             <tr>
-                <td><a href="{{ path('formateur_documents', { formationId: formation.id, formateurId: formateur.id }) }}">{{ formateur.lastName }}</a></td>
-                <td>{{ formateur.firstName }}</td>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nom</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Prénom</th>
             </tr>
-        {% else %}
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+            {% for formateur in formateurs %}
+                <tr>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ formateur.lastName }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ formateur.firstName }}</td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="2" class="px-6 py-4 text-center text-sm text-gray-500">Aucun formateur associé à cette formation.</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        <h2 class="text-2xl font-semibold mt-8 mb-4 text-gray-700">Associer un Formateur</h2>
+        {{ form_start(form) }}
+        <div class="mb-4">
+            {{ form_label(form.formateur, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+            {{ form_widget(form.formateur, {'attr': {'class': 'mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500'}}) }}
+            {{ form_widget(form.submit, {'attr': {'class': 'mt-2 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500'}}) }}
+            {{ form_errors(form.formateur) }}
+
+
+
+        {{ form_end(form) }} </div>
+
+        <h2 class="text-2xl font-semibold mt-8 mb-4 text-gray-700">Documents Uploadés</h2>
+        <table class="min-w-full divide-y divide-gray-200 bg-white">
+            <thead class="bg-gray-50">
             <tr>
-                <td colspan="2">Aucun formateur associé à cette formation.</td>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Formateur</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Categorie</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date d'Upload</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
             </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+            {% for document in documents %}
+                <tr>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ document.formateur.lastName }} {{ document.formateur.firstName }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ document.category.name }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ document.uploadedAT|date('d/m/Y') }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        <a href="{{ path('app_document_download', { id: document.id }) }}" class="text-blue-600 hover:text-blue-800">Télécharger</a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="4" class="px-6 py-4 text-center text-sm text-gray-500">Aucun document trouvé.</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
 
-
-    <h2>Associer un Formateur</h2>
-    {{ form_start(form) }}
-    <button type="submit">Associer Formateur</button>
-    {{ form_end(form) }}
-
-    <a href="{{ path('app_formations') }}">Retour à la liste des formations</a>
+        <a href="{{ path('app_formations') }}" class="mt-4 inline-block text-blue-600 hover:text-blue-800">Retour à la liste des formations</a>
+    </div>
 {% endblock %}

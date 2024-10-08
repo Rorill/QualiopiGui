@@ -27,7 +27,9 @@ class AssociatedFormateurType extends AbstractType
         $builder
             ->add('formateur', EntityType::class, [
                 'class' => User::class,
-                'choice_label' => 'LastName', // Champ affiché dans le select
+                'choice_label' => function (User $user) {
+                    return $user->getLastName() . ' ' . $user->getFirstName(); // Combiner le nom et le prénom
+                },
                 'placeholder' => 'Sélectionner un formateur',
                 'query_builder' => function (EntityRepository $er) {
                     // Récupérer l'utilisateur connecté

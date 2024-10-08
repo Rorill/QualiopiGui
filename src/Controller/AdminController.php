@@ -18,14 +18,14 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Constraints\Date;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-
+use Symfony\Bundle\SecurityBundle\Security;
 
 
 class AdminController extends AbstractController
 {
     #[Route('/admin', name: 'app_admin')]
     #[IsGranted('ROLE_ADMIN')]
-    public function index(EntityManagerInterface $entityManager,UserRepository $userRepository): Response
+    public function index(EntityManagerInterface $entityManager, UserRepository $userRepository): Response
     {// get info in entities
         $formations = $entityManager->getRepository(Formations::class)->findAll();
         $formateurs = $entityManager->getRepository(User::class)->findall();
@@ -66,8 +66,6 @@ class AdminController extends AbstractController
                     }
 
 
-
-
                     // CSV file has 4 columns
                     $name = $data[0];
                     $startDateStr = trim($data[1] ?? null);
@@ -83,7 +81,6 @@ class AdminController extends AbstractController
                     if (!$location) {
                         continue; // Ignorer cette ligne si le lieu n'est pas trouvé
                     }
-
 
 
                     // check if the formation already exist
@@ -113,6 +110,26 @@ class AdminController extends AbstractController
 
         return $this->render('admin/import_csv.html.twig', [
             'form' => $form->createView(),
+        ]);
+    }
+
+    // route to see all users
+    #[Route("/admin/users", name: 'admin_users')]
+    #[IsGranted('ROLE_ADMIN')]
+    public function listUsers(EntityManagerInterface $entityManager, Security $security): Response
+    {
+        // Récupérer l'utilisateur connecté
+        $currentUser = $security->getUser();
+
+        // Récupérer tous les utilisateurs sauf l'utilisateur connecté
+        $users = $entityManager->getRepository(User::class)->createQueryBuilder('u')
+            ->where('u.id != :currentUserId')
+            ->setParameter('currentUserId', $currentUser->getId())
+            ->getQuery()
+            ->getResult();
+
+        return $this->render('admin/list_users.html.twig', [
+            'users' => $users,
         ]);
     }
 
@@ -308,35 +325,31 @@ class AdminController extends AbstractController
     }
 
 
-        // modify a Location
+    // modify a Location
 
-        #[Route('/admin/location/edit/{id}', name: 'admin_location_edit')]
-        #[IsGranted('ROLE_ADMIN')]
-        public function editLocation(int $id, Request $request, EntityManagerInterface $entityManager): Response
-        {
-            $location = $entityManager->getRepository(Location::class)->find($id);
+    #[Route('/admin/location/edit/{id}', name: 'admin_location_edit')]
+    #[IsGranted('ROLE_ADMIN')]
+    public function editLocation(int $id, Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $location = $entityManager->getRepository(Location::class)->find($id);
 
-            if (!$location) {
-                throw $this->createNotFoundException('Lieu non trouvé.');
-            }
+        if (!$location) {
+            throw $this->createNotFoundException('Lieu non trouvé.');
+        }
 
-            $form = $this->createForm(LocationType::class, $location);
-            $form->handleRequest($request);
+        $form = $this->createForm(LocationType::class, $location);
+        $form->handleRequest($request);
 
-            if ($form->isSubmitted() && $form->isValid()) {
-                $entityManager->flush();
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
 
-                $this->addFlash('success', 'Lieu modifié avec succès.');
-                return $this->redirectToRoute('admin_location_list');
-            }
+            $this->addFlash('success', 'Lieu modifié avec succès.');
+            return $this->redirectToRoute('admin_location_list');
+        }
 
-            return $this->render('Location/edit_location.html.twig', [
-                'form' => $form->createView(),
-            ]);
-
-
-
-
+        return $this->render('Location/edit_location.html.twig', [
+            'form' => $form->createView(),
+        ]);
 
 
     }
@@ -372,4 +385,27 @@ class AdminController extends AbstractController
         ]);
     }
 
+
+    #[Route('/admin/formations/{id}/formateur/{formateurId}/documents', name: 'admin_formations_documents')]
+    public function showFormateurDocuments(EntityManagerInterface $entityManager, $id, $formateurId)
+    {
+        // Récupérer la formation par son ID
+        $formation = $entityManager->getRepository(Formations::class)->find($id);
+
+        // Récupérer le formateur par son ID
+        $formateur = $entityManager->getRepository(User::class)->find($formateurId);
+
+        // Récupérer les documents uploadés par le formateur pour cette formation
+        $documents = $entityManager->getRepository(Documents::class)->findBy([
+            'Formation' => $formation,
+            'Formateur' => $formateur,
+        ]);
+
+        return $this->render('admin/Formations/documents.html.twig', [
+            'formation' => $formation,
+            'formateur' => $formateur,
+            'documents' => $documents,
+            'id' => $id
+        ]);
+    }
 }

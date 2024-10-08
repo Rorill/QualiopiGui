@@ -114,6 +114,33 @@ class Documents
         $this->uploadedAT = new \DateTimeImmutable;
     }
 
+    /**
+     * @var File|null
+     * @Assert\File(
+     *     maxSize = "10M",
+     *     mimeTypes = {"application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"}
+     * )
+     */
+    private $file;
+
+    // Getters et setters
+    public function getFile(): ?File
+    {
+        return $this->file;
+    }
+
+    public function setFile(?File $file): self
+    {
+        $this->file = $file;
+
+        return $this;
+    }
+
+
+
+
+
+
 
 
 

@@ -1,67 +1,32 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1 class="flex justify-center">Tableau de bord Administrateur</h1>
-    <a href="{{ path('admin_session_add') }}" class="btn btn-success">Ajouter une nouvelle formation</a>
+    <div class="container mx-auto my-8 p-4 bg-white shadow-md rounded-lg">
+        <h1 class="text-3xl font-bold mb-6 text-gray-800">Tableau de Bord Admin</h1>
 
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Gestion des Utilisateurs -->
+            <div class="bg-blue-100 p-4 rounded-lg shadow hover:shadow-lg transition duration-200">
+                <h2 class="text-xl font-semibold text-blue-800">Gestion des Utilisateurs</h2>
+                <p class="mt-2 text-gray-600">Gérez les utilisateurs de la plateforme.</p>
+                <a href="{{ path('admin_users') }}" class="mt-4 inline-block text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded">Accéder</a>
+            </div>
 
-    <h2 class="flex justify-center">Formations</h2>
-    <table class="table">
-        <thead>
-        <tr>
-            <th>ID</th>
-            <th>Titre</th>
-            <th>Date de début</th>
-            <th>Date de fin</th>
-            <td>Lieu </td>
-            <th>Action</th>
-        </tr>
-        </thead>
-        <tbody>
+            <!-- Gestion des Formations -->
+            <div class="bg-green-100 p-4 rounded-lg shadow hover:shadow-lg transition duration-200">
+                <h2 class="text-xl font-semibold text-green-800">Gestion des Formations</h2>
+                <p class="mt-2 text-gray-600">Ajoutez, modifiez ou supprimez des formations.</p>
+                <a href="{{ path('app_formations') }}" class="mt-4 inline-block text-white bg-green-600 hover:bg-green-700 px-4 py-2 rounded">Accéder</a>
+            </div>
 
-        {% for formation in formations %}
-            <tr>
-                <td>{{ formation.id }}</td>
-                <td>{{ formation.name }}</td>
-                <td>{{ formation.startingDate|date('d/m/Y') }}</td>
-                <td>{{ formation.endingDate|date('d/m/Y') }}</td>
-                <td> {{ formation.location.City  }}</td>
-                <td>
-                    <a href="{{ path('admin_session_edit', { id: formation.id }) }}" class="btn btn-warning">Modifier</a>
-                    <a href="{{ path('admin_session_delete', { id: formation.id }) }}" class="btn btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette formation ?');">Supprimer</a>
-                </td>
-            </tr>
-        {% endfor %}
-
-        </tbody>
-    </table>
-
-
-    <div class="mt-32">
-    <h2 class="flex justify-center">Formateurs</h2>
-    <table class="table">
-        <thead>
-        <tr>
-            <th>Nom complet</th>
-            <th>Email</th>
-            <th>Actions</th>
-        </tr>
-        </thead>
-        <tbody>
-  {% for formateurs in formateurs %}
-            <tr>
-                <td>{{ formateurs.firstName }}  {{ formateurs.lastName }}</td>
-                <td>{{ formateurs.email }}</td>
-                <td>
-                    <a href="{{ path('admin_user_edit', {id: formateurs.id}) }}" class="btn btn-warning">Modifier</a>
-                    <a href="{{ path('admin_user_delete', { id: formateurs.id }) }}" class="btn btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?');">Supprimer</a>
-                </td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+            <!-- Upload de Fichier CSV -->
+            <div class="bg-yellow-100 p-4 rounded-lg shadow hover:shadow-lg transition duration-200">
+                <h2 class="text-xl font-semibold text-yellow-800">Upload Fichier CSV</h2>
+                <p class="mt-2 text-gray-600">Importez des formations via un fichier CSV.</p>
+                <a href="{{ path('admin_import_csv') }}" class="mt-4 inline-block text-white bg-yellow-600 hover:bg-yellow-700 px-4 py-2 rounded">Accéder</a>
+            </div>
+        </div>
     </div>
-
-
-
 {% endblock %}
+
+

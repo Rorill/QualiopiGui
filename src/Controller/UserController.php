@@ -10,7 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Bundle\SecurityBundle\Security;
-
+use Symfony\Component\HttpFoundation\RedirectResponse;
 class UserController extends AbstractController
 {
     #[Route('/user', name: 'app_user')]
@@ -100,6 +100,47 @@ class UserController extends AbstractController
             'formateur' => $formateur,
         ]);
     }
+#[Route('/user/formation/{id}/delete', name: 'user_delete_doc')]
+#[Method('POST')]
+public function deleteDocument(int $id, EntityManagerInterface $entityManager, Security $security): RedirectResponse
+{
+    // Récupérer le document par ID
+    $document = $entityManager->getRepository(Documents::class)->find($id);
+
+    // Vérifier si le document existe
+    if (!$document) {
+        $this->addFlash('error', 'Document non trouvé.');
+        return $this->redirectToRoute('app_user');
+    }
+
+    // Vérifier que l'utilisateur connecté est bien le propriétaire du document (formateur)
+    $user = $security->getUser();
+    if ($document->getFormateur() !== $user) {
+        $this->addFlash('error', 'Vous n\'avez pas la permission de supprimer ce document.');
+        return $this->redirectToRoute('app_user');
+    }
+
+
+
+    // Supprimer le fichier physique du serveur
+    $filePath = $this->getParameter('documents_directory') . '/' . $document->getTitle();
+    if (file_exists($filePath)) {
+        // Essayer de supprimer le fichier
+        if (unlink($filePath)) {
+            // Supprimer le document de la base de données
+            $entityManager->remove($document);
+            $entityManager->flush();
+            $this->addFlash('success', 'Document supprimé avec succès.');
+        } else {
+            $this->addFlash('error', 'Erreur lors de la suppression du fichier sur le serveur.');
+        }
+    } else {
+        $this->addFlash('error', 'Le fichier n\'existe pas sur le serveur.');
+    }
+
+    return $this->redirectToRoute('app_user');
+}
+
 }
 
 

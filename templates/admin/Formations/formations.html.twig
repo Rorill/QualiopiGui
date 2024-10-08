@@ -1,51 +1,96 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>Liste des Formations</h1>
+    <div class="container mx-auto my-8 p-6 bg-white shadow-md rounded-lg">
+        <h1 class="text-3xl font-bold mb-6 text-gray-800">Liste des Formations</h1>
 
-    <div>
-        <a href="{{ path('app_formations', { sort: 'name', order: (sort == 'name' and order == 'asc') ? 'desc' : 'asc' }) }}">
-            Titre
-            {% if sort == 'name' %}
-                {% if order == 'asc' %}▲{% else %}▼{% endif %}
-            {% endif %}
-        </a>
-        |
-        <a href="{{ path('app_formations', { sort: 'startDate', order: (sort == 'startDate' and order == 'asc') ? 'desc' : 'asc' }) }}">
-            Date de Début
-            {% if sort == 'startDate' %}
-                {% if order == 'asc' %}▲{% else %}▼{% endif %}
-            {% endif %}
-        </a>
-        |
-        <a href="{{ path('app_formations', { sort: 'location.name', order: (sort == 'location.name' and order == 'asc') ? 'desc' : 'asc' }) }}">
-            Lieu
-            {% if sort == 'location.name' %}
-                {% if order == 'asc' %}▲{% else %}▼{% endif %}
-            {% endif %}
-        </a>
+        <!-- Formulaire de filtrage -->
+        <form method="get" class="flex justify-between mb-4">
+            <div class="flex items-center space-x-2">
+                <label for="city" class="text-sm font-medium text-gray-700">Ville :</label>
+                <select name="city" id="city" class="border border-gray-300 rounded-md p-2">
+                    <option value="">Sélectionner une ville</option>
+                    {% for location in cities %}
+                        <option value="{{ location.city }}" {% if location.city == city %}selected{% endif %}>
+                            {{ location.city }}
+                        </option>
+                    {% endfor %}
+                </select>
+
+                <label for="startingDate" class="text-sm font-medium text-gray-700">Date de Début :</label>
+                <input type="date" name="startingDate" id="startingDate" value="{{ startingDate }}" class="border border-gray-300 rounded-md p-2">
+
+                <button type="submit" class="bg-blue-600 text-white rounded-md p-2">Filtrer</button>
+            </div>
+
+            <!-- Choix du nombre d'éléments à afficher -->
+            <div>
+                <label for="limit" class="text-sm font-medium text-gray-700">Afficher</label>
+                <select id="limit" name="limit" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                    <option value="20" {% if limit == 20 %}selected{% endif %}>20</option>
+                    <option value="50" {% if limit == 50 %}selected{% endif %}>50</option>
+                    <option value="100" {% if limit == 100 %}selected{% endif %}>100</option>
+                </select>
+                <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    Appliquer
+                </button>
+            </div>
+        </form>
+
+        <!-- Choix du tri -->
+        <div class="flex mb-4">
+            <div>
+                <a href="{{ path('app_formations', { sort: 'startingDate', order: (sort == 'startingDate' and order == 'asc') ? 'desc' : 'asc', city: city, startingDate: startingDate }) }}" class="text-blue-600 hover:text-blue-800">
+                    Date de Début
+                    {% if sort == 'startingDate' %}
+                        {% if order == 'asc' %}▲{% else %}▼{% endif %}
+                    {% endif %}
+                </a>
+                |
+                <a href="{{ path('app_formations', { sort: 'location.city', order: (sort == 'location.city' and order == 'asc') ? 'desc' : 'asc', city: city, startingDate: startingDate }) }}" class="text-blue-600 hover:text-blue-800">
+                    Lieu
+                    {% if sort == 'location.city' %}
+                        {% if order == 'asc' %}▲{% else %}▼{% endif %}
+                    {% endif %}
+                </a>
+            </div>
+        </div>
+
+        <!-- Tableau des résultats -->
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200 bg-white">
+                <thead class="bg-gray-50">
+                <tr>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Titre</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date de Début</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date de Fin</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Lieu</th>
+                </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                {% for session in sessions %}
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            <a href="{{ path('formations_detail', { id: session.id }) }}" class="text-blue-600 hover:text-blue-800">
+                                {{ session.name }}
+                            </a>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ session.startingDate|date('d/m/Y') }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ session.endingDate|date('d/m/Y') }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ session.location.city }}</td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="4" class="px-6 py-4 text-center text-sm text-gray-500">Aucune formation trouvée.</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="mt-6">
+            {{ knp_pagination_render(sessions) }}
+        </div>
     </div>
-
-    <table class="table">
-        <thead>
-        <tr>
-            <th>Titre</th>
-            <th>Date de Début</th>
-            <th>Date de Fin</th>
-            <th>Lieu</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for session in sessions %}
-            <tr>
-                <td><a href="{{ path('formations_detail', { id: session.id }) }}">{{ session.name }}</a></td>
-                <td>{{ session.startingDate|date('d/m/Y') }}</td>
-                <td>{{ session.endingDate|date('d/m/Y') }}</td>
-                <td>{{ session.location.city }}</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
 {% endblock %}
-
-

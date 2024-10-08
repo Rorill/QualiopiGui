@@ -1,13 +1,44 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>Upload de Document pour la Formation : {{ formation.name }}</h1>
+    <div class="container mx-auto my-8 p-4 bg-white shadow-md rounded-lg">
+        <div class="flex-1">
+        <h1 class="text-2xl font-bold mb-6 text-gray-800">Upload de Document pour la Formation : {{ formation.name }}</h1>
 
-    {{ form_start(form) }}
-    {{ form_row(form.title) }}
-    {{ form_row(form.category) }}
-    {{ form_row(form.save) }}
-    {{ form_end(form) }}
+        </div>
 
-    <a href="{{ path('app_user') }}">Retour au tableau de bord</a>
+        <div class="max-w-lg mx-auto">
+            {{ form_start(form, {'attr': {'class': 'space-y-6'}}) }}
+            <div class="mb-4">
+                {{ form_label(form.title, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+                {{ form_widget(form.title, {'attr': {'class': 'mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500'}}) }}
+                {{ form_errors(form.title, {'attr': {'class': 'text-red-500 text-sm'}}) }}
+
+
+
+            </div>
+
+            <div class="mb-4">
+                {{ form_label(form.file, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+                {{ form_widget(form.file, {'attr': {'class': 'mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500'}}) }}
+                {{ form_errors(form.file, {'attr': {'class': 'text-red-500 text-sm'}}) }}
+            </div>
+
+            <div class="mb-4">
+                {{ form_label(form.category, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+                {{ form_widget(form.category, {'attr': {'class': 'mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500'}}) }}
+                {{ form_errors(form.category, {'attr': {'class': 'text-red-500 text-sm'}}) }}
+            </div>
+
+            <div>
+                {{ form_widget(form.save, {'attr': {'class': 'inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500'}}) }}
+            </div>
+
+            {{ form_end(form) }}
+        </div>
+
+        <div class="mt-8">
+            <a href="{{ path('app_user') }}" class="text-blue-600 hover:text-blue-800 underline">Retour au tableau de bord</a>
+        </div>
+    </div>
 {% endblock %}

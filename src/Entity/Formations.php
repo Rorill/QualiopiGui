@@ -9,6 +9,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use phpDocumentor\Reflection\Types\String_;
 
+
 #[ORM\Entity(repositoryClass: FormationsRepository::class)]
 class Formations
 {
