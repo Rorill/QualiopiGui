@@ -10,8 +10,10 @@ use App\Form\LocationType;
 use App\Form\SessionType;
 use App\Form\UserType;
 use App\Repository\UserRepository;
+use PharIo\Manifest\Email;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -19,6 +21,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Constraints\Date;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\Mime\Address;
 
 
 class AdminController extends AbstractController
@@ -128,7 +131,7 @@ class AdminController extends AbstractController
             ->getQuery()
             ->getResult();
 
-        return $this->render('admin/list_users.html.twig', [
+        return $this->render('admin/User/list_users.html.twig', [
             'users' => $users,
         ]);
     }
@@ -138,7 +141,7 @@ class AdminController extends AbstractController
 
     #[Route('/admin/user/add', name: 'admin_user_add')]
     #[IsGranted('ROLE_ADMIN')]
-    public function addUser(Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher): Response
+    public function addUser(Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher, MailerInterface $mailer): Response
     {
         $user = new User();
         $form = $this->createForm(UserType::class, $user);
@@ -156,11 +159,20 @@ class AdminController extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
 
+            $email = (new \Symfony\Component\Mime\Email())
+                ->from('admin@qualiopiCCI.com')
+                ->to($user->getEmail())
+                ->subject('test')
+                ->text('Sending emails is fun again!')
+                ->html('<p>Bien joué !</p>');
+
+            $mailer->send($email);
+
             $this->addFlash('success', 'Utilisateur créé avec succès.');
             return $this->redirectToRoute('app_admin');
         }
 
-        return $this->render('admin/app_adduser.html.twig', [
+        return $this->render('admin/User/app_adduser.html.twig', [
             'form' => $form->createView(),
         ]);
     }
@@ -181,7 +193,7 @@ class AdminController extends AbstractController
         $entityManager->flush();
 
         $this->addFlash('success', 'Utilisateur supprimé avec succès.');
-        return $this->redirectToRoute('app_admin');
+        return $this->redirectToRoute('admin_users');
     }
 
     // function to modify user
