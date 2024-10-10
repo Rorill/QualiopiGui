@@ -1,12 +1,28 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>Importer des Formations depuis un Fichier CSV</h1>
+    <div class="container mx-auto my-8 p-6 bg-white shadow-md rounded-lg">
+        <h1 class="text-3xl font-bold mb-4 text-gray-800">Importer des Formations depuis un Fichier CSV</h1>
+        <h2 class="text-xl font-semibold mb-4 text-gray-700">Assurez-vous d'importer un fichier CSV avec le format : <strong>NOM / DATE DE DÉBUT / DATE DE FIN / LIEU</strong></h2>
 
-    {{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn btn-primary">Importer</button>
-    {{ form_end(form) }}
+        {{ form_start(form, {'attr': {'class': 'space-y-4'}}) }}
 
-    <a href="{{ path('app_admin') }}">Retour au tableau de bord</a>
+        <div class="mb-4">
+            {{ form_widget(form, {'attr': {'class': 'mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500'}}) }}
+        </div>
+
+        <div class="mt-4">
+            <button class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                Importer
+            </button>
+        </div>
+
+        {{ form_end(form) }}
+
+        <div class="mt-8">
+            <a href="{{ path('app_admin') }}" class="inline-block text-blue-600 hover:text-blue-800">
+                Retour au tableau de bord
+            </a>
+        </div>
+    </div>
 {% endblock %}

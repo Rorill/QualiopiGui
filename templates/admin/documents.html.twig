@@ -19,7 +19,7 @@
                         <strong>{{ document.title }}</strong> - Téléchargé le {{ document.uploadedAt|date('d/m/Y H:i') }}
                         <br>
                         <a href="{{ asset('uploads/documents/' ~ document.filePath) }}" target="_blank">Télécharger</a>
-                    </li>
+                    </li>s
                 {% endfor %}
             </ul>
         {% endfor %}
