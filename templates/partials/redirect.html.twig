@@ -1,0 +1,9 @@
+{% extends 'base.html.twig' %}
+
+{% if is_granted('ROLE_ADMIN') %}
+{% do redirect('app_admin') %}
+{% elseif is_granted('ROLE_USER') %}
+{% do redirect('app_user') %}
+{% else %}
+{% do redirect('app_login') %}
+{% endif %}

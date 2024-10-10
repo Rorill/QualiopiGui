@@ -6,32 +6,33 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
-
+use Symfony\Bundle\SecurityBundle\Security;
 class SecurityController extends AbstractController
 {
     #[Route(path: '/login', name: 'app_login')]
-    public function login(AuthenticationUtils $authenticationUtils): Response
+    public function login(AuthenticationUtils $authenticationUtils, Security $security): Response
     {
-        if ($this->getUser()) {
-            if ($this->isGranted('ROLE_ADMIN')) {
-                return $this->redirectToRoute('app_admin');
-            } else {
-                return $this->redirectToRoute('app_user');
-            }
+        // Si l'utilisateur est déjà connecté, redirigez-le en fonction de son rôle
+        if ($security->isGranted('ROLE_ADMIN')) {
+            return $this->redirectToRoute('app_admin');
+        } elseif ($security->isGranted('ROLE_USER')) {
+            return $this->redirectToRoute('app_user');
         }
 
-
-    // get the login error if there is one
+        // Récupérer l'erreur de connexion s'il y en a une
         $error = $authenticationUtils->getLastAuthenticationError();
 
-        // last username entered by the user
+        // Dernier nom d'utilisateur saisi par l'utilisateur
         $lastUsername = $authenticationUtils->getLastUsername();
 
         return $this->render('security/login.html.twig', [
             'last_username' => $lastUsername,
-            'error' => $error,
+            'error'         => $error,
         ]);
     }
+
+
+
 
     #[Route(path: '/logout', name: 'app_logout')]
     public function logout(): void
