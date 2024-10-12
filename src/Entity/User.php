@@ -55,6 +55,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Documents::class, mappedBy: 'Formateur')]
     private Collection $documents;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $ResetToken = null;
+
     public function __construct()
     {
         $this->documents = new ArrayCollection();
@@ -221,4 +224,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+
 }

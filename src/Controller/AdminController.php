@@ -26,6 +26,7 @@ use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\Mailer;
 
 
+
 class AdminController extends AbstractController
 {
     #[Route('/admin', name: 'app_admin')]
@@ -162,11 +163,15 @@ class AdminController extends AbstractController
             $entityManager->flush();
 
             $email = (new \Symfony\Component\Mime\Email())
+
                 ->from('admin@qualiopiCCI.com')
                 ->to($user->getEmail())
                 ->subject('test')
                 ->text('Sending emails is fun again!')
-                ->html('<p>Bien joué !</p>');
+                ->html('<p>Bonjour {{ lastname }} {{ firstname }} ,<br>
+                vous avez été inscrit sur la plate forme CCI QUALIOPI,
+                Cette outil permet de faciliter la transmission de document pédagogique à la CCI,
+                Pour modifier votre mot de passe </p>');
 
             $mailer->send($email);
 

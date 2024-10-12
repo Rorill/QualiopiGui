@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container mx-auto my-8 p-6 bg-white shadow-md rounded-lg">
+        <h1 class="text-3xl font-bold mb-4">Mot de Passe Oublié</h1>
+        <p>Veuillez entrer votre adresse e-mail pour recevoir un lien de réinitialisation de mot de passe.</p>
+
+        {{ form_start(requestForm) }}
+        {{ form_widget(requestForm) }}
+        <button class="btn btn-primary">Envoyer le lien de réinitialisation</button>
+        {{ form_end(requestForm) }}
+
+        <a href="{{ path('app_login') }}" class="mt-4 inline-block text-blue-600 hover:text-blue-800">Retour à la page de connexion</a>
+    </div>
+{% endblock %}

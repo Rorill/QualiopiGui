@@ -5,12 +5,19 @@ namespace App\Controller;
 use App\Entity\Documents;
 use App\Entity\Formations;
 use App\Entity\User;
+use App\Form\ResetPasswordRequestType;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Mailer\Mailer;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 class UserController extends AbstractController
 {
     #[Route('/user', name: 'app_user')]
@@ -140,6 +147,12 @@ public function deleteDocument(int $id, EntityManagerInterface $entityManager, S
 
     return $this->redirectToRoute('app_user');
 }
+
+
+
+
+
+
 
 }
 
