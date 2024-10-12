@@ -2,33 +2,72 @@
 
 {% block body %}
     <div class="container mx-auto my-8 p-6 bg-white shadow-md rounded-lg">
-        <h1 class="text-3xl font-bold mb-4 text-gray-800">Documents de {{ formateur.firstName }} {{ formateur.lastName }} pour la formation : {{ formation.name }}</h1>
+        <h1 class="text-3xl font-bold mb-4">Documents par Catégorie pour la Formation : {{ Formation.name }}</h1>
+        <h2 class="text-xl font-semibold mb-4">Formateur : {{ Formateur.firstName }} {{ Formateur.lastName }}</h2>
 
-        <table class="min-w-full divide-y divide-gray-200 bg-white">
-            <thead class="bg-gray-50">
-            <tr>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nom du Document</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date d'Upload</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
-            </tr>
-            </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
+        <!-- Itinéraires Pédagogiques -->
+        <h3 class="text-lg font-bold mt-6">Itinéraires Pédagogiques</h3>
+        <ul class="list-disc pl-5">
+            {% set documents_found = false %}
             {% for document in documents %}
-                <tr>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ document.title }}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ document.uploadedAT|date('d/m/Y') }}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        <a href="{{ path('app_document_download', { id: document.id }) }}" class="text-blue-600 hover:text-blue-800">Télécharger</a>
-                    </td>
-                </tr>
-            {% else %}
-                <tr>
-                    <td colspan="3" class="px-6 py-4 text-center text-sm text-gray-500">Aucun document trouvé.</td>
-                </tr>
+                {% if document.category.name == 'Itinéraires pédagogiques' %}
+                    <li class="mb-2">
+                        {{ document.title }}
+                        <a href="{{ path('app_document_download', { id: document.id }) }}" class="text-blue-600 hover:text-blue-800 underline ml-2">Télécharger</a>
+                    </li>
+                    {% set documents_found = true %}
+                {% endif %}
             {% endfor %}
-            </tbody>
-        </table>
+            {% if not documents_found %}
+                <li>Aucun document associé à cette catégorie.</li>
+            {% endif %}
+        </ul>
+        <form method="post" action="{{ path('send_reminder', { formateurId: Formateur.id, formationId: Formation.id, category: 'Itinéraires pédagogiques' }) }}" class="mt-2">
+            <button type="submit" class="bg-red-600 text-white font-semibold py-2 px-4 rounded hover:bg-red-700">Envoyer un rappel</button>
+        </form>
 
-        <a href="{{ path('formations_detail', { id: formation.id }) }}" class="mt-4 inline-block text-blue-600 hover:text-blue-800">Retour aux détails de la formation</a>
+        <!-- Supports -->
+        <h3 class="text-lg font-bold mt-6">Supports</h3>
+        <ul class="list-disc pl-5">
+            {% set documents_found = false %}
+            {% for document in documents %}
+                {% if document.category.name == 'Supports' %}
+                    <li class="mb-2">
+                        {{ document.title }}
+                        <a href="{{ path('app_document_download', { id: document.id }) }}" class="text-blue-600 hover:text-blue-800 underline ml-2">Télécharger</a>
+                    </li>
+                    {% set documents_found = true %}
+                {% endif %}
+            {% endfor %}
+            {% if not documents_found %}
+                <li>Aucun document associé à cette catégorie.</li>
+            {% endif %}
+        </ul>
+        <form method="post" action="{{ path('send_reminder', { formateurId: Formateur.id, formationId: Formation.id, category: 'Supports' }) }}" class="mt-2">
+            <button type="submit" class="bg-red-600 text-white font-semibold py-2 px-4 rounded hover:bg-red-700">Envoyer un rappel</button>
+        </form>
+
+        <!-- Tests de Fin de Formation -->
+        <h3 class="text-lg font-bold mt-6">Tests de Fin de Formation</h3>
+        <ul class="list-disc pl-5">
+            {% set documents_found = false %}
+            {% for document in documents %}
+                {% if document.category.name == 'Tests de fin de formation' %}
+                    <li class="mb-2">
+                        {{ document.title }}
+                        <a href="{{ path('app_document_download', { id: document.id }) }}" class="text-blue-600 hover:text-blue-800 underline ml-2">Télécharger</a>
+                    </li>
+                    {% set documents_found = true %}
+                {% endif %}
+            {% endfor %}
+            {% if not documents_found %}
+                <li>Aucun document associé à cette catégorie.</li>
+            {% endif %}
+        </ul>
+        <form method="post" action="{{ path('send_reminder', { formateurId: Formateur.id, formationId: Formation.id, category: 'Tests de fin de formation' }) }}" class="mt-2">
+            <button type="submit" class="bg-red-600 text-white font-semibold py-2 px-4 rounded hover:bg-red-700">Envoyer un rappel</button>
+        </form>
+
+        <a href="{{ path('formations_detail', { id: Formation.id }) }}" class="mt-4 inline-block text-blue-600 hover:text-blue-800 underline">Retour à la formation</a>
     </div>
-{% endblock %}
+{% endblock %}g

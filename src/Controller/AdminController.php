@@ -22,6 +22,8 @@ use Symfony\Component\Validator\Constraints\Date;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Mime\Address;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use Symfony\Component\Mailer\Mailer;
 
 
 class AdminController extends AbstractController
@@ -111,7 +113,7 @@ class AdminController extends AbstractController
             }
         }
 
-        return $this->render('admin/import_csv.html.twig', [
+        return $this->render(' admin/Formations/import_csv.html.twig', [
             'form' => $form->createView(),
         ]);
     }
@@ -225,7 +227,7 @@ class AdminController extends AbstractController
             return $this->redirectToRoute('app_admin');
         }
 
-        return $this->render('admin/edit_user.html.twig', [
+        return $this->render('admin/User/edit_user.html.twig', [
             'form' => $form->createView(),
         ]);
     }
@@ -397,5 +399,27 @@ class AdminController extends AbstractController
         ]);
     }
 
+    #[Route('/send-reminder/{formateurId}/{formationId}/{category}', name: 'send_reminder')]
+    public function sendReminder(int $formateurId, int $formationId, string $category, EntityManagerInterface $entityManager, MailerInterface $mailer): Response
+    {
+        $formateur = $entityManager->getRepository(User::class)->find($formateurId);
+        $formation = $entityManager->getRepository(Formations::class)->find($formationId);
 
+        if (!$formateur || !$formation) {
+            throw $this->createNotFoundException('Formateur ou formation non trouvé');
+        }
+
+        // Envoi d'un email simple
+        $email = ( new \Symfony\Component\Mime\Email())
+            ->from('admin@CCIQualiopi.com')
+            ->to($formateur->getEmail()) // Récupère l'email du formateur
+            ->subject('Rappel de téléchargement de document')
+            ->text('Bonjour ' . $formateur->getFirstName() . ', merci d\'uploader le document pour la formation "' . $formation->getName() . '" dans la catégorie "' . $category . '".');
+
+        // Envoie de l'email
+        $mailer->send($email);
+
+        $this->addFlash('success', 'Email de rappel envoyé avec succès.');
+        return $this->redirectToRoute('formateur_documents', ['formationId' => $formationId, 'formateurId' => $formateurId]);
+    }
 }
